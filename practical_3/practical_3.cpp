@@ -41,9 +41,7 @@ class ThreadedBinarySearchTree{
     }
 
     void insert(int data){
-        // int data;
-        // cout << "Enter Data to be inserted ";
-        // cin >> data;
+        
 
         if(root == NULL){
              create(data);
@@ -52,16 +50,16 @@ class ThreadedBinarySearchTree{
         Node *new_node = new Node(data);
         Node* temp = root;
 
-        while(temp != NULL){
+        while(temp != dummy){
 
             if(temp->data == data){
                 cout << "Duplicate Node are not allow" << endl;
                 return;
             }
 
-            if(temp->data < data){
+            if(data < temp->data){
 
-                if(temp->left != NULL){
+                if(temp->has_left){
                     temp = temp->left;
                 }else{
                     //configure new_node
@@ -71,11 +69,13 @@ class ThreadedBinarySearchTree{
                     //configure parent node
                     temp->left = new_node;
                     temp->has_left = true;
+                    
+
                     return;
                 }
             }else{
 
-                if(temp->right != NULL){
+                if(temp->has_right){
                     temp = temp->right;
                 }else{
                     // configure new_node
@@ -98,29 +98,14 @@ class ThreadedBinarySearchTree{
 
     void in_order(){
         if(root == NULL) return;
-        
-        int count = 0;
 
         Node* temp = root;
         while(temp != dummy){
 
-            cout << "inside while" << endl;
-            count += 1;
-
-            if(count > 10){
-                return;
-            }
-
             while(temp->has_left){
                 temp = temp->left;
             }
-            cout << " hello" << endl;
-            cout << "printing" << temp->data << " ";
-
-            if(temp->has_right){
-                temp = temp->right;
-                continue;
-            }
+            cout << temp->data << " ";
 
             while(temp->has_right == false){
 
@@ -130,6 +115,12 @@ class ThreadedBinarySearchTree{
 
                 cout << temp->data << " ";
 
+            }
+
+            if (temp->has_right)
+            {
+                temp = temp->right;
+                continue;
             }
         }
     }
@@ -143,6 +134,8 @@ int main(){
 
 
     tbst.insert(20);
+    tbst.insert(10);
+    tbst.insert(30);
     tbst.in_order();
 
 
