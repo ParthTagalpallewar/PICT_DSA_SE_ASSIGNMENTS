@@ -58,9 +58,36 @@ private:
         {
             root == NULL;
             return;
+        }else if(temp->has_left && temp->has_right){
+
+            Node* left_sub_tree = temp->left;
+            Node* right_sub_tree = temp->right;
+
+            Node* right_most_of_left_sub_tree = left_sub_tree;
+            while(right_most_of_left_sub_tree -> has_right){
+                right_most_of_left_sub_tree = right_most_of_left_sub_tree->right;
+            }
+
+            Node* left_most_of_right_sub_tree = right_sub_tree;
+            while(left_most_of_right_sub_tree->has_left){
+                left_most_of_right_sub_tree = left_most_of_right_sub_tree->left;
+            }
+
+            right_most_of_left_sub_tree->right = left_most_of_right_sub_tree;
+            left_most_of_right_sub_tree->left = left_sub_tree;
+            left_most_of_right_sub_tree->has_left = true;
+
+            root = right_sub_tree;
+            dummy->left = root;
+
+        }else if(temp->has_left){
+            root = temp->left;
+            dummy->left = root;
+        }else{
+            root = temp->right;
+            dummy->right = root;
         }
 
-        // todo: Handle four cases of delete root function
         // 1. if temp is root
         // 2. if temp has only right
         // 3. if temp has only left
@@ -224,10 +251,109 @@ public:
             delete_root();
             return;
         }
-
+        Node *parent = NULL;
         Node *temp = root;
 
         // todo: handle four condition for delete node
+        while(temp != dummy){
+
+            if(data < temp->data){
+                
+                if(!temp->has_left){
+                    cout << "Node does not found to delete data" << endl;
+                    return;
+                }else{
+
+                    parent = temp;
+                    temp = temp->left;
+
+                }
+
+            }else if(data > temp->data){
+                
+                if(!temp->has_right){
+                    cout << "Node does not found to delete data" << endl;
+                    return;
+                }else{
+
+                    parent = temp;
+                    temp = temp->right;
+
+                }
+
+            }else{
+
+
+                //case 1: temp is left_node
+                if(temp->is_left_node()){
+                    //check if temp is present in left side of parent
+                    if(parent->left->data == data){
+                        parent->left = temp->left;
+                        parent->has_left = false;
+                    }else{
+                        parent->right = temp->right;
+                        parent->has_right = false;
+                    }
+                }
+
+                else if(temp->has_left && temp->has_right){      
+
+                    Node* left_sub_tree = temp->left;
+                    Node* right_sub_tree = temp->right;
+
+                    Node *right_most_of_left_sub_tree = left_sub_tree;
+                    while (right_most_of_left_sub_tree->has_right)
+                    {
+                        right_most_of_left_sub_tree = right_most_of_left_sub_tree->right;
+                    }
+
+                    Node *left_most_of_right_sub_tree = right_sub_tree;
+                    while (left_most_of_right_sub_tree->has_left)
+                    {
+                        left_most_of_right_sub_tree = left_most_of_right_sub_tree->left;
+                    }
+
+                    right_most_of_left_sub_tree->right = left_most_of_right_sub_tree;
+                    left_most_of_right_sub_tree->left = left_sub_tree;
+                    left_most_of_right_sub_tree->has_left = true;
+
+                    if(parent->left->data == data){
+                        parent->left = right_sub_tree;
+                    }else{
+                        parent->right = right_sub_tree; 
+                    }
+
+                }else if(temp->has_left){
+
+                    if (parent->left->data == data)
+                    {
+                        parent->left = temp->left;
+                    }
+                    else
+                    {
+                        parent->right = temp->left;
+                    }
+                }else{
+                    if (parent->left->data == data)
+                    {
+                        parent->left = temp->right;
+                    }
+                    else
+                    {
+                        parent->right = temp->right;
+                    }
+                }
+
+                return;
+
+
+            }
+
+        }
+
+        cout << "Node not found to delete" << endl;
+        return;
+
     }
 };
 
@@ -246,7 +372,9 @@ int main()
 
     tbst.in_order();
 
-    tbst.pre_order();
+    tbst.delete_node(10);
+
+    tbst.in_order();
 
     return 0;
 }
