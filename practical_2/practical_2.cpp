@@ -173,6 +173,18 @@ private:
         pre_order(node->right);
     }
 
+    Node* copy(Node* node){
+
+        if(node==NULL) return NULL;
+
+        Node* new_node = new Node(node->data);
+
+        new_node->left = copy(node->left);
+        new_node->right = copy(node->right);
+
+        return new_node;
+
+    }
 public:
     BinaryTree()
     {
@@ -338,28 +350,11 @@ public:
         }
     }
 
-    void operator=(Node *other)
+    void operator=(BinaryTree tree)
     {
-
-        Queue<Node *> queue;
-        queue.enqueue(root);
-
-        while (!queue.is_empty())
-        {
-            Node *curr = queue.dequeue();
-
-            Node *new_node = new Node(curr->data);
-
-            if (curr->left != NULL)
-            {
-                queue.enqueue(curr->left);
-            }
-
-            if (curr->right != NULL)
-            {
-                queue.enqueue(curr->right);
-            }
-        }
+        
+        root = copy(tree.get_root());
+       
     }
 
     void erase_all_nodes(Node *node){
@@ -369,8 +364,6 @@ public:
         erase_all_nodes(node->right);
         free(node);
     }
-
-    
 
     void iterative_in_order(){
         Stack<Node*> stack;
@@ -478,11 +471,14 @@ int main()
     BinaryTree btree;
 
     btree.build();
+    
+    BinaryTree new_btree;
 
+    new_btree = btree;
 
     // btree.iterative_in_order();
-    btree.iterative_post_order();    
-
+    // btree.iterative_post_order();    
+    new_btree.iterative_in_order();
 
 
     return 0;
