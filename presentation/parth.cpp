@@ -151,6 +151,7 @@ int main()
     Node *root = expTree.build(s);
 
     expTree.post_order(root);
+    cout << endl;
 
     return 0;
 }

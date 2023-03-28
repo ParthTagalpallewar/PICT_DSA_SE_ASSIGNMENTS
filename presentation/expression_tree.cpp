@@ -75,7 +75,7 @@ nptr build(string &s)
                 // Update the tree
                 t->left = t2;
                 t->right = t1;
-p
+
                 // Push the node to the node stack
                 stN.push(t);
             }
