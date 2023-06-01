@@ -1,0 +1,1 @@
+{"name":"Local: kruskal","url":"/home/parth/PICT/PICT_DSA_SE_ASSIGNMENTS/practical_7/kruskal.cpp","tests":[{"id":1685598485132,"input":"6 9\n1 4 1\n1 5 4\n1 2 2\n5 4 9 \n4 3 5\n4 2 3\n2 3 3\n3 6 8\n2 6 7","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/parth/PICT/PICT_DSA_SE_ASSIGNMENTS/practical_7/kruskal.cpp","group":"local","local":true}
