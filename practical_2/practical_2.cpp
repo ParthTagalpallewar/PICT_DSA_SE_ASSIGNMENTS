@@ -1,16 +1,16 @@
-// Beginning with an empty binary tree, Construct binary tree by inserting the values
-// in the order given. After constructing a binary tree perform following operations
-// on it-
-//  Perform inorder, preorder and post order traversal
-//  Change a tree so that the roles of the left and right pointers are swapped at
-// every node
-//  Find the height of tree
-//  Copy this tree to another [operator=]
-//  Count number of leaves, number of internal nodes.
-//  Erase all nodes in a binary tree.
-// (Implement both recursive and non-recursive methods)
+/*
+Beginning with an empty binary tree, Construct binary tree by inserting the values
+in the order given. After constructing a binary tree perform following operations
+on it-
+ Perform inorder, preorder and post order traversal
+ Change a tree so that the roles of the left and right pointers are swapped at every node
+ Find the height of tree
+ Copy this tree to another [operator=]
+ Count number of leaves, number of internal nodes.
+ Erase all nodes in a binary tree.
+(Implement both recursive and non-recursive methods)
 
-//TODO: Need to create copy method using = sign
+*/
 
 #include <iostream>
 using namespace std;
@@ -297,7 +297,7 @@ public:
     int height(Node *node)
     {
 
-        if (node == NULL || (node->left == NULL && node->right == NULL))
+        if (node == NULL)
         {
             return 0;
         }
@@ -410,13 +410,7 @@ public:
         Stack<Node*> stack;
         Node* curr = root;
 
-        int count = 0;
-
         while(!stack.is_empty() || curr != NULL){
-
-            if(count > 1000) break;
-
-            count += 1;
 
             if(curr != NULL){
 
@@ -454,6 +448,35 @@ public:
         }
     }
 
+    void iterative_post_order1(){
+        Stack<Node*> st;
+        Stack<Node*> st1;
+
+        Node* node = root;
+        st.push(root);
+
+        while(!st.is_empty()){
+
+            Node* curr = st.pop();
+            st1.push(curr);
+
+            if(curr->left != NULL){
+                st.push(curr->left);
+            }
+
+            if(curr->right != NULL){
+                st.push(curr->right);
+            }
+
+        }
+
+        while(!st1.is_empty()){
+            cout << st1.pop()->data << " ";
+        }
+
+        
+    }
+
     void build(){
         root = new Node(20);
         root->left = new Node(10);
@@ -479,6 +502,8 @@ int main()
     // btree.iterative_in_order();
     // btree.iterative_post_order();    
     new_btree.iterative_in_order();
+    new_btree.iterative_pre_order();
+    new_btree.iterative_post_order1();
 
 
     return 0;
