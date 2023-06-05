@@ -3,5 +3,8 @@
         "iostream": "cpp",
         "ostream": "cpp"
     },
-    "cph.general.onceMaintainerMessage": false
+    "cph.general.onceMaintainerMessage": false,
+    "cSpell.words": [
+        "heapify"
+    ]
 }

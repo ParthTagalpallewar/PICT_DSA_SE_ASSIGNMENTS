@@ -5,36 +5,41 @@ class Student{
     string name;
     int roll;
 
-    public:
-        Student(){
-            this->name = "";
-            this->roll = -1;
-        }
+public:
+    Student()
+    {
+        this->name = "";
+        this->roll = -1;
+    }
 
-        Student(string name, int roll){
-            this->name = name;
-            this->roll = roll;
-        }
-        
-        void display(){
-            cout << "Name: - " << name << " roll " << roll << endl;
-        }
+    Student(string name, int roll){
+        this->name = name;
+        this->roll = roll;
+    }
 
-        friend class Heap;
+    void display(){
+        cout << "Student( " << name + ", " << roll << ") " << endl;
+    }
+
+    friend class Heap;
+
 };
 
 class Heap{
 
-    int capacity;
-    int size;
+    int size, capacity;
     Student **heap;
 
-    int parent(int i){return (i/2);}
-    int left_child(int i) {
-        return (2*i + 1);
+    int parent(int i){
+        return ((i-1)/2);
     }
-    int right_child(int i){
-        return (2*i + 2);
+
+    int left(int i){
+        return (i*2 + 1);
+    }
+
+    int right(int i){
+        return (i*2 + 2);
     }
 
     void swap(Student* &s1, Student* &s2){
@@ -43,91 +48,90 @@ class Heap{
         s2 = temp;
     }
 
-    void heapify(int i){
-        int left = left_child(i);
-        int right = right_child(i);
-        int largest = i;
-
-        if(left < size && heap[left]->roll > heap[largest]->roll){
-            largest = left;
-        }
-
-        if(right < size && heap[right]->roll > heap[largest]->roll){
-            largest = right;
-        }
-
-        if(largest != i){
-            swap(heap[largest], heap[i]);
-            heapify(largest);
-        }
-    }
-
     public:
-    Heap(int capacity){
-        capacity = capacity;
-        size = 0;
-        heap = new Student*[capacity];
-    }
+        Heap(int capacity){
+            this->capacity=capacity;
+            size = 0;
+            heap = new Student*[capacity];
+        }
 
-    void insert(Student *student){
-        if(size == capacity)
-            return;
+        void insert(Student* stud){
+            if(size >= capacity){
+                cout << "Heap is full" << endl;
+                return;
+            }
 
-        int curr = size;
-        heap[size] = student;
-        size += 1;
+            int i = size;
+            heap[size] = stud;
+            size += 1;
 
-        while(curr > 0 && heap[curr]->roll > heap[parent(curr)]->roll){
-            swap(heap[curr], heap[parent(curr)]);
-            curr = parent(curr);
+            while(i!=0 && heap[i]->roll > heap[parent(i)]->roll){
+                swap(heap[i], heap[parent(i)]);
+                i = parent(i);
+            }
+
+        }
+
+        void heapify(int i){
+
+            int lc = left(i);
+            int rc = right(i);
+            int largest = i;
+
+            if(lc <= size && heap[lc] > heap[largest]){
+                largest = lc;
+            }
+
+            if(rc <= size && heap[rc] > heap[largest]){
+                largest = rc;
+            }
+
+            if(largest != i){
+                swap(heap[i], heap[largest]);
+                heapify(largest);
+            }
+        }
+
+        Student* getMax(){
+            return heap[0];
+        }
+
+        Student* extractMax(){
+            Student* max = heap[0];
+            heap[0] = heap[size-1];
+            size = size-1;
+
+            heapify(0);
+            return max;
+        }
+
+        void print(){
+            for(int i=0; i<size; i++){
+                 heap[i]->display();
+            }
         }
 
 
-    }
-    
-    Student* get_max(){
-
-        if(size == 0) return NULL;
-
-        Student* max = heap[0];
-
-        heap[0] = heap[size-1];
-
-        size -= 1;
-
-        heapify(0);
-        return max;
-    }
 };
 
-// Getting the pointer of the student array
-void heapSort(Student *arr[], int n)
-{
-    Heap maxHeap(n);
+int main(){
+    
+    int n;
+    cin >> n;
 
-    // Build max heap
-    for (int i = 0; i < n; i++)
-        maxHeap.insert(arr[i]);
+    Heap heap(n);
 
-    // Extract max elements and place them at the end of the array
-    for (int i = n - 1; i >= 0; i--)
-        arr[i] = maxHeap.get_max(); // It changes the sequence of student array as it is a pointer
-}
+    for(int i=0; i<n; i++){
+        string name;
+        int roll;
 
-int main()
-{
-    const int numStudents = 5;
+        cin >> name;
+        cin >> roll;
 
-    // Student data (name, rank)
-    Student *students[numStudents] = {
-        new Student("Alice", 5), new Student("Bob", 2), new Student("Charlie", 9),
-        new Student("David", 1), new Student("Eve", 3)};
+        heap.insert(new Student(name, roll));
+    }
 
-    heapSort(students, numStudents);
-
-    cout << "Sorted student data (ascending order of ranks):" << endl;
-    for (int i = 0; i < numStudents; i++)
-        students[i]->display();
+    heap.print();
 
     return 0;
 }
