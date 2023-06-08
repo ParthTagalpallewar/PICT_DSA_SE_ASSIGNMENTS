@@ -42,7 +42,7 @@ void sortt(Edge *edges, int ne)
         edges[min_i] = temp;
     }
 }
-Edge find_min_edge_no_cycle(int visited[], Edge* edges, int ne){
+Edge find_min_edge_no_cycle(int parent[], int rank[],  Edge* edges, int ne){
 
     sortt(edges, ne);
 
@@ -50,17 +50,22 @@ Edge find_min_edge_no_cycle(int visited[], Edge* edges, int ne){
     for(int i=0; i<ne; i++){
 
         Edge curr = edges[i];
+        
+        int u = curr.i;
+        int v = curr.j;
 
-        if(visited[curr.i] == visited[curr.j]) continue;
+        //if absolute parent of both vertex are same(if they belongs to same sets)
+        if(parent[u] == parent[v]) continue;
 
-        int temp = i;
-        while(visited[temp] != temp){
-            temp = visited[temp];
+        if(rank[u] > rank[v]){
+            parent[v] = parent[u];
+            rank[u] += 1;
+        }else{
+            parent[u] = parent[v];
+            rank[v] += 1;
         }
-        edges[i].w = 999;
-        visited[curr.j] = temp;        
 
-        return curr;                               
+        return curr;                       
 
     }
 
@@ -101,8 +106,11 @@ int main()
 
     // kruskals started
     int visited[nv + 1];
-    for (int i = 0; i <= nv; i++)
+    int ranks[nv + 1];
+    for (int i = 0; i <= nv; i++){
         visited[i] = i;
+        ranks[i] = 0;
+    }
 
     // creating graph for storing answers
     int **ans;
@@ -127,7 +135,7 @@ int main()
 
     for (int e = 0; e < nv - 1; e++)
     {
-        Edge min = find_min_edge_no_cycle(visited, edges, ne);
+        Edge min = find_min_edge_no_cycle(visited, ranks, edges, ne);
         cout << " Min (" << min.i << ", " << min.j << ", " << min.w << " )" <<endl;
         ans[min.i][min.j] = min.w;
         ans[min.j][min.i] = min.w;
