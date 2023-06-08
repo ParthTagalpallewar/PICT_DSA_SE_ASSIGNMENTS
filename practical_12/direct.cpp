@@ -24,7 +24,7 @@ class Student{
     }
 
     void show(){
-        cout << "Student(" << name << ", " << roll << endl;
+        cout << "Student(" << name << ", " << roll << endl << ")";
     }
 
     friend class DB;
