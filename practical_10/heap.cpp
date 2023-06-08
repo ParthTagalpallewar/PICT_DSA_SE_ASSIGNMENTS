@@ -65,7 +65,7 @@ class Heap{
             heap[size] = stud;
             size += 1;
 
-            while(i!=0 && heap[i]->roll > heap[parent(i)]->roll){
+            while(i>=0 && heap[i]->roll > heap[parent(i)]->roll){
                 swap(heap[i], heap[parent(i)]);
                 i = parent(i);
             }
