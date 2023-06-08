@@ -1,119 +1,178 @@
-
 #include<iostream>
+#include<string.h>
 #include<fstream>
-
 using namespace std;
-class Student {
 
-public:
-    string name;
-    int roll_no;
-    int div;
-    string address;
+class Student{
+    int roll;
+    char name[20];
+   
 
-    Student() {
-        name = "";
-        roll_no = 0;
-        div = 0;
-        address = "";
+    public:
+    Student()
+    {
+        this->roll = -1;
+        strcpy(name, "");
+        
     }
 
-void read_data() {
-    cout << "Enter the name : ";
-    cin >> name;
-    cout << "Enter roll no. :";
-    cin >> roll_no;
-    cout << "Division : ";
-    cin >> div;
-    cout << "Address : ";
-    cin >> address;
-}
-
-void printData() {
-    cout << "Name : " << name << endl;
-    cout << "Roll no. : " << roll_no << endl;
-    cout << "Division : " << div << endl;
-    cout << "Address : " << address << endl;
-}
-
-friend class StudDatabase;
-
-};
-
-class StudDatabase {
-
-Student st;
-fstream file;
-
-public:
-
-void add_data() {
-    file.open("new.txt", ios::app);
-    cout << "Enter the name : ";
-    cin >> st.name;
-    cout << "Enter roll no. :";
-    cin >> st.roll_no;
-    cout << "Division : ";
-    cin >> st.div;
-    cout << "Address : ";
-    cin >> st.address;
-
-    file << endl << "Name : " << st.name << endl;
-    file << "Roll no : " << st.roll_no << endl;
-    file << "Division : " << st.div << endl;
-    file << "Address : " << st.address << endl;
-
-    file.close();
-}
-
-void print_data() {
-
-    file.open("new.txt", ios::in);
-    string tp;
-    while (getline(file, tp)) { //read data from file object and put it into string.
-        cout << tp << "\n";   //print the data of the string
+    void take_input(){
+        cout << "Enter Roll No :- ";
+        cin >> roll;
+        cout << "Enter Name:  " ;
+        cin.getline(name, 19);
+        cin >> name;
+        cout << endl;
     }
-    file.close();
-}
 
-void search() {
-cout << "Search" << endl;
-}
+    void show(){
+        cout << "Student(" << name << ", " << roll << ") " << endl; 
+    }
 
+    friend class DB;
 };
 
-int main() {
+class DB{
 
-StudDatabase s;
+    public:
 
-int choice;
-bool flag = true;
+        void insert(){
+            Student stud;
+            stud.take_input();
+            stud.show();
 
-while (flag) {
-cout << "---STUDENT DATABASE---" << endl;
-cout << "1. Add a Student." << endl;
-cout << "2. Display all Students" << endl;
-cout << "3. Search a Student" << endl;
-cout << "4. Exit" << endl;
+            fstream fs;
 
-cout << "Enter your Choice : ";
-cin >> choice;
+            fs.open("stud.dat", ios::app | ios::binary);
 
-if (choice == 1) {
-s.add_data();
-} else if (choice == 2) {
-s.print_data();
-} else if (choice == 3) {
-s.search();
-} else if (choice == 4) {
-flag = false;
-cout << "Exited..." << endl;
-} else {
-cout << "Invalid Input!" << endl;
-cout << "Enter valid Input..." << endl;
-}
-}
+            fs.write((char *)&stud, sizeof(stud));
 
-return 0;
+            fs.close();
 
+            cout << "Student Inserted successfully" << endl;
+        }
+
+        void print_all(){
+
+            Student s;
+
+            fstream fs;
+            fs.open("stud.dat", ios::in | ios::binary);
+
+            if (!fs.is_open())
+            {
+                cout << "File Not Found!!" << endl;
+                return;
+            }
+
+            fs.read((char *)&s, sizeof(s));
+            while (!fs.eof())
+            {
+                s.show();
+                fs.read((char *)&s, sizeof(s));
+            }
+
+            cout << endl;
+            cout << endl;
+
+            fs.close();
+
+        }
+        
+        void search(){
+            cout << "Enter student you wanted to search ";
+            string stud;
+            cin >> stud;
+
+            fstream fin;
+            fin.open("stud.dat", ios::in | ios::binary);
+            Student s;
+            fin.read((char *)&s, sizeof(s));
+            while(!fin.eof()){
+
+                if(s.name == stud){
+                    s.show();
+                }
+
+                fin.read((char *)&s, sizeof(s));
+            }
+
+            fin.close();
+        }
+
+        void del(){
+            string name;
+            cout << "Enter Name of student to remove " << endl;
+            cin >> name;
+
+            fstream fs("stud.dat", ios::in | ios::binary);
+            fstream fout("temp.dat", ios::app | ios::binary);
+
+            Student st;
+            fs.read((char *)&st, sizeof(st));
+            while(!fs.eof()){
+
+                if(st.name == name){
+                    st.show();
+                }else{
+                    fout.write((char *)&st, sizeof(st));
+                }
+
+
+                fs.read((char *)&st, sizeof(st));
+            }
+
+            remove("stud.dat");
+            rename("temp.dat", "stud.dat");
+
+
+        }
+};
+
+int main()
+{
+        cout << "Sequential Files in CPP" << endl; // prints Hashing
+
+        DB s1;
+
+        bool flag = true;
+        string data;
+
+        while (flag)
+        {
+            cout << endl << endl;
+            cout << "1. Add new Student (save)" << endl;
+            cout << "2. Display All Students" << endl;
+            cout << "3. Search Student" << endl;
+            cout << "4. Delete Student" << endl;
+            cout << "5. Exit..." << endl;
+            int ch;
+            cout << "\nEnter Your Choise: ";
+            cin >> ch;
+
+            switch (ch)
+            {
+            case 1:
+                s1.insert();
+                break;
+            case 2:
+                s1.print_all();
+                break;
+
+            case 3:
+                s1.search();
+                break;
+            case 4:
+                s1.del();
+                break;
+            case 5:
+                cout << "Exiting...";
+                flag = false;
+                break;
+            default:
+                cout << "Invalid Entry" << endl;
+                break;
+            }
+        }
+        return 0;
 }
