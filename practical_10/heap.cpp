@@ -65,7 +65,7 @@ class Heap{
             heap[size] = stud;
             size += 1;
 
-            while(i>=0 && heap[i]->roll > heap[parent(i)]->roll){
+            while(i>0 && heap[i]->roll > heap[parent(i)]->roll){
                 swap(heap[i], heap[parent(i)]);
                 i = parent(i);
             }
@@ -88,7 +88,7 @@ class Heap{
 
             if(largest != i){
                 swap(heap[i], heap[largest]);
-                heapify(largest);
+                //heapify(largest);
             }
         }
 
@@ -106,9 +106,14 @@ class Heap{
         }
 
         void print(){
-            for(int i=0; i<size; i++){
-                 heap[i]->display();
+            int n = size;
+            for(int i=0; i<n; i++){
+               
+                extractMax()->display();
+                
             }
+
+            
         }
 
 
